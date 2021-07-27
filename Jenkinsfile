@@ -1,28 +1,27 @@
 pipeline {
-	agent any
+  agent any
+  stages {
+    stage('build') {
+      steps {
+        sh 'mvn compile'
+      }
+    }
 
-	tools {
-		maven '3.8.1'
-	}
+    stage('test') {
+      steps {
+        sh 'mvn clean test'
+      }
+    }
 
-	stages {
+    stage('package') {
+      steps {
+        sh 'mvn package -DskipTests'
+        archiveArtifacts 'target/*.war'
+      }
+    }
 
-		stage('build') {
-			steps {
-				sh 'mvn compile'
-			}
-		}
-
-		stage('test') {
-			steps {
-				sh 'mvn clean test'
-			}
-		}
-
-		stage('package') {
-			steps {
-				sh 'mvn package -DskipTests'
-			}
-		}
-	}
+  }
+  tools {
+    maven '3.8.1'
+  }
 }
